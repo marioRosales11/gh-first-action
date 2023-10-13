@@ -12,11 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: create ECR
-      uses: int128/create-ecr-repository-action@v1
+    - name: Create ECR repo if missing
+      uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
       with:
-        repository: ${{ secrets.REPO_NAME }}
-        Region: us-east-1
+        DOCKER_REPO_NAME: ${{ secrets.REPO_NAME }}
 
     - name: Checkout
       uses: actions/checkout@v2
