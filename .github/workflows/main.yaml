@@ -16,6 +16,7 @@ jobs:
       uses: int128/create-ecr-repository-action@v1
       with:
         repository: ${{ secrets.REPO_NAME }}
+        region: us-east-1
 
     - name: Checkout
       uses: actions/checkout@v2
