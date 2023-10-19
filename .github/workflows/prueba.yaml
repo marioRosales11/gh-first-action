@@ -12,4 +12,8 @@ jobs:
         run: |
           ls -la
           cd vestible-ms
+          echo "getting old image value"
+          prevImage=$(cat values.yaml | grep "image" | cut -c 10-)
+          echo "updating values.yaml to change docker image"
+          sed -i '' "s#$prevImage#961118838869.dkr.ecr.us-east-1.amazonaws.com/vestible-gateway:latest#g" values.yaml
           helm template vestible-ms ./ 
