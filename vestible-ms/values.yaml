@@ -1,7 +1,7 @@
 replica_count: 1
 name: auth
 containers:
-  image: 961118838869.dkr.ecr.us-east-1.amazonaws.com/vestible-gateway:latest
+  image: defaultImage
 service:
   name: auth-cluster-ip
   port: 3000

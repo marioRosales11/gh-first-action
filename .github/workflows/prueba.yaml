@@ -8,12 +8,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: set git commit sha as tag
+        id: set-tag
+        run: echo "::set-output name=tag::$(git rev-parse --short ${{ github.sha }})"
+
       - name: get and replace values yaml
         run: |
-          cd vestible-ms
-          pwd
-          echo "getting old image value"
-          prevImage=$(cat values.yaml | grep "image" | cut -c 10-)
           echo "updating values.yaml to change docker image"
-          sed -i "s#$prevImage#961118838869.dkr.ecr.us-east-1.amazonaws.com/vestible-gateway:randomValue#g" values.yaml
+          sed -i "s#defaultImage#961118838869.dkr.ecr.us-east-1.amazonaws.com/vestible-gateway:${{ steps.set-tag.outputs.tag }}#g" ./vestible-ms/values.yaml
           helm template vestible-ms ./
