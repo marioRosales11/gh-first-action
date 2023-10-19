@@ -27,7 +27,6 @@ jobs:
       uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
       with:
         DOCKER_REPO_NAME: ${{ secrets.REPO_NAME }}
-        NUM_TAGGED_IMAGES_TO_RETAIN: 10
 
     - name: Login to Amazon ECR
       id: login-ecr
