@@ -1,0 +1,17 @@
+replica_count: 1
+name: auth
+containers:
+  image: 961118838869.dkr.ecr.us-east-1.amazonaws.com/vestible-gateway:latest
+service:
+  name: auth-cluster-ip
+  port: 3000
+  type: ClusterIP
+envs:
+  needsConfigMap: true
+  configMapRefName: auth-config-map
+  needsSecrets: true
+  secretRefName: auth-secrets
+  secretNames:
+    - REDIS_PASSWORD
+    - REDIS_USERNAME
+  
