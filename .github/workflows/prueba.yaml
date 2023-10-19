@@ -17,4 +17,4 @@ jobs:
         run: |
           echo "updating values.yaml to change docker image"
           sed -i "s#defaultImage#961118838869.dkr.ecr.us-east-1.amazonaws.com/vestible-gateway:${{ steps.set-tag.outputs.tag }}#g" ./vestible-ms/values.yaml
-          helm template vestible-ms ./
+          helm template vestible-ms ./vestible-ms
