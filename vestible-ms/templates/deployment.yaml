@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replica_count }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.containers.image }}
+          {{- if .Values.envs.needsConfigMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.envs.configMapRefName }}
+          {{- end }}
+          {{- if .Values.envs.needsSecrets }}
+          {{- $secretRefName := .Values.envs.secretRefName  }}
+          env:
+            {{- range .Values.envs.secretNames  }}
+            - name: {{ . | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretRefName }}
+                  key: {{ . | upper }}
+            {{- end }}
+          {{- end }}
