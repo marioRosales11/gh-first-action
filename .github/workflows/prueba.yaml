@@ -11,3 +11,5 @@ jobs:
       - name: get and replace values yaml
         run: |
           ls -la
+          cd vestible-ms
+          helm template vestible-ms ./ 
