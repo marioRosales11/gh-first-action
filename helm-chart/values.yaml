@@ -1,0 +1,18 @@
+replica_count: 1
+# name: auth
+containers:
+  image: defaultImage
+service:
+  name: authentication-service-cluster-ip
+  port: 3000
+  type: ClusterIP
+envs:
+  needsConfigMap: true
+  configMapRefName: authentication-config
+  needsSecrets: true
+  secretRefName: authentication-service-secret
+  secretNames:
+    - DB_PASSWORD
+    - DB_USERNAME
+    - PASSPORT_SECRET
+  

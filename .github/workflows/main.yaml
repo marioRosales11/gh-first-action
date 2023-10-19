@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ qa ]
+    branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 
@@ -27,21 +27,32 @@ jobs:
       uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
       with:
         DOCKER_REPO_NAME: ${{ secrets.REPO_NAME }}
+        NUM_TAGGED_IMAGES_TO_RETAIN: 10
 
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+
+    - name: set git commit sha as tag
+      id: set-tag
+      run: echo "::set-output name=tag::$(git rev-parse --short ${{ github.sha }})"
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-        IMAGE_TAG: "latest"
+        IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
 
       run: |
-        # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        # Build a docker image and pushing it to ECR 
+        echo "Building and pushing image to ECR..."
+        docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --push --provenance=false .
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+    - name: change image on value.yaml before helm deploy
+      run: |
+        echo "updating values.yaml to change docker image"
+        sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/values.yaml
+        helm template helm-chart ./helm-chart
+

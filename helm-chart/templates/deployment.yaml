@@ -4,6 +4,7 @@ metadata:
   name: {{ .Chart.Name }}
 spec:
   replicas: {{ .Values.replica_count }}
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
