@@ -7,9 +7,9 @@ service:
   port: 3000
   type: ClusterIP
 envs:
-  needsConfigMap: true
+  needsConfigMap: false
   configMapRefName: authentication-config
-  needsSecrets: true
+  needsSecrets: false
   secretRefName: authentication-service-secret
   secretNames:
     - DB_PASSWORD
