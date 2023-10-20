@@ -62,5 +62,5 @@ jobs:
     - name: Deploy to eks
       run: |
         echo "Deploying to EKS"
-        helm upgrade --install test-service ./helm-chart
+        helm upgrade --install --kubeconfig ~/.kube/config test-service ./helm-chart
 
