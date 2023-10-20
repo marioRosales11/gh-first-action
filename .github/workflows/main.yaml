@@ -56,8 +56,8 @@ jobs:
         
     - name: Configure Kubeconfig
       run: |
-        aws eks update-kubeconfig --name ${{ CLUSTER_NAME }} --region us-east-1
-        kubectl config use-context ${{ CLUSTER_NAME }}
+        aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region us-east-1
+        kubectl config use-context ${{ secrets.CLUSTER_NAME }}
 
     - name: Deploy to eks
       run: |
