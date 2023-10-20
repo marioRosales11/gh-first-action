@@ -65,7 +65,7 @@ jobs:
     #     echo "Deploying to EKS"
     #     helm upgrade --install --kubeconfig ~/.kube/config test-service ./helm-chart
     - name: Deploy Helm
-      uses: bitovi/github-actions-deploy-eks-helm@v1.0.0
+      uses: bitovi/github-actions-deploy-eks-helm@v1.2.7
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
