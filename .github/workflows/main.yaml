@@ -52,7 +52,7 @@ jobs:
         # Build a docker image and pushing it to ECR 
         echo "Building and pushing image to ECR..."
         docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:qa-$IMAGE_TAG --push --provenance=false .
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:qa-$IMAGE_TAG"
 
     - name: change image on value.yaml before helm deploy
       run: |
