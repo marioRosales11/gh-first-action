@@ -53,5 +53,14 @@ jobs:
       run: |
         echo "updating values.yaml to change docker image"
         sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/values.yaml
+        
+    - name: Configure Kubeconfig
+      run: |
+        aws eks update-kubeconfig --name ${{ CLUSTER_NAME }} --region us-east-1
+        kubectl config use-context ${{ CLUSTER_NAME }}
+
+    - name: Deploy to eks
+      run: |
+        echo "Deploying to EKS"
         helm upgrade --install test-service ./helm-chart
 
