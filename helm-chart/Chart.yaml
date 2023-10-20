@@ -1,5 +1,5 @@
 apiVersion: v2
-name: authentication-service
+name: test-service
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
