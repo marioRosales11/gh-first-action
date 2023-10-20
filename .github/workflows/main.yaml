@@ -22,6 +22,10 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
+    - name: Configure Kubeconfig
+      run: |
+        aws eks update-kubeconfig --name qa_cluster --region us-east-1
+        kubectl config use-context qa_cluster
 
     - name: Create ECR repo if missing
       uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
@@ -54,10 +58,6 @@ jobs:
         echo "updating values.yaml to change docker image"
         sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/values.yaml
         
-    - name: Configure Kubeconfig
-      run: |
-        aws eks update-kubeconfig --name arn:aws:eks:us-east-1:961118838869:cluster/qa_cluster --region us-east-1
-        kubectl config use-context arn:aws:eks:us-east-1:961118838869:cluster/qa_cluster
 
     - name: Deploy to eks
       run: |
