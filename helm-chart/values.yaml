@@ -1,5 +1,5 @@
 replica_count: 1
-# name: auth
+revisionHistory: 3
 containers:
   image: defaultImage
 service:

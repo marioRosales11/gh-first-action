@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ main ]
+    branches: [ qa ]
   # pull_request:
   #   branches: [ main ]
 
@@ -64,16 +64,3 @@ jobs:
       run: |
         echo "Deploying to EKS"
         helm upgrade --install test-service ./helm-chart
-    # - name: Deploy Helm
-    #   uses: bitovi/github-actions-deploy-eks-helm@v1.2.7
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     aws-region: us-east-1
-    #     cluster-name: qa_cluster
-    #     cluster-role-arn: arn:aws:eks:us-east-1:961118838869:cluster/qa_cluster
-    #     config-files: helm-chart/values.yaml
-    #     chart-path: helm-chart/templates
-    #     namespace: default
-    #     name: authentication-service
-
