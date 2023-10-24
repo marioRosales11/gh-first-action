@@ -9,3 +9,5 @@ jobs:
         run: echo "Hello there!"
       - name: Print goodbye
         run: echo "Done - byee!"
+      - name: Print repo name
+        run: echo ${{ github.event.repository.name }}
