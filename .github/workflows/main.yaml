@@ -42,7 +42,7 @@ jobs:
     - name: set git commit sha as tag
       id: set-tag
       # run: echo "::set-output name=tag::$(git rev-parse --short ${{ github.sha }})"
-      run: echo "tag=$(git rev-parse --short ${{ github.sha }})" >> $tag
+      run: echo "tag=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
