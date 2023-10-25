@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -41,7 +41,6 @@ jobs:
 
     - name: set git commit sha as tag
       id: set-tag
-      # run: echo "::set-output name=tag::$(git rev-parse --short ${{ github.sha }})"
       run: echo "tag=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
 
     - name: Build, tag, and push the image to Amazon ECR
@@ -55,7 +54,8 @@ jobs:
         # Build a docker image and pushing it to ECR 
         echo "Building and pushing image to ECR..."
         docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:qa-$IMAGE_TAG --push --provenance=false .
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:qa-$IMAGE_TAG"
+        # echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:qa-$IMAGE_TAG"
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:qa-$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: change image on value.yaml before helm deploy
       run: |
