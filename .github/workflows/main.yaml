@@ -1,10 +1,10 @@
 on:
   push:
-    branches: [ qa ]
+    branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 
-name: AWS ECR push
+name: AWS microservice deployment
 
 jobs:
   deploy:
@@ -25,13 +25,15 @@ jobs:
 
     - name: Configure Kubeconfig
       run: |
-        aws eks update-kubeconfig --name qa_cluster --region us-east-1
-        kubectl config use-context arn:aws:eks:us-east-1:961118838869:cluster/qa_cluster
+        aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region us-east-1
+        kubectl config use-context arn:aws:eks:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:cluster/${{ secrets.CLUSTER_NAME }}
 
     - name: Create ECR repo if missing
       uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
       with:
         DOCKER_REPO_NAME: ${{ secrets.REPO_NAME }}
+        TAG_PREFIX: 'qa-'
+        NUM_TAGGED_IMAGES_TO_RETAIN: 5
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -39,7 +41,8 @@ jobs:
 
     - name: set git commit sha as tag
       id: set-tag
-      run: echo "::set-output name=tag::$(git rev-parse --short ${{ github.sha }})"
+      # run: echo "::set-output name=tag::$(git rev-parse --short ${{ github.sha }})"
+      run: echo "tag=$(git rev-parse --short ${{ github.sha }})" >> $tag
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
@@ -63,4 +66,4 @@ jobs:
     - name: Deploy to eks
       run: |
         echo "Deploying to EKS"
-        helm upgrade --install test-service ./helm-chart
+        helm upgrade --install ${{ github.event.repository.name }} ./helm-chart
