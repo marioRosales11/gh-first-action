@@ -1,0 +1,18 @@
+replica_count: 2
+revisionHistory: 3
+containers:
+  image: defaultImage
+service:
+  name: test-service-cluster-ip
+  port: 3000
+  type: ClusterIP
+envs:
+  needsConfigMap: false
+  configMapRefName: authentication-config
+  needsSecrets: false
+  secretRefName: authentication-service-secret
+  secretNames:
+    - DB_PASSWORD
+    - DB_USERNAME
+    - PASSPORT_SECRET
+  
