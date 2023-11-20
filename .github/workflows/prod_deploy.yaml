@@ -66,4 +66,4 @@ jobs:
     - name: Deploy to eks
       run: |
         echo "Deploying to EKS"
-        helm upgrade --install ${{ github.event.repository.name }} ./helm-chart/prod_values.yaml ./helm-chart
+        helm upgrade --install ${{ github.event.repository.name }} ./helm-chart -f ./helm-chart/prod_values.yaml
