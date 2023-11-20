@@ -21,12 +21,12 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-region: us-west-1
 
     - name: Configure Kubeconfig
       run: |
-        aws eks update-kubeconfig --name ${{ secrets.PROD_CLUSTER_NAME }} --region us-east-1
-        kubectl config use-context arn:aws:eks:us-east-1:${{ secrets.PROD_AWS_ACCOUNT_ID }}:cluster/${{ secrets.PROD_CLUSTER_NAME }}
+        aws eks update-kubeconfig --name ${{ secrets.PROD_CLUSTER_NAME }} --region us-west-1
+        kubectl config use-context arn:aws:eks:us-west-1:${{ secrets.PROD_AWS_ACCOUNT_ID }}:cluster/${{ secrets.PROD_CLUSTER_NAME }}
 
     - name: Create ECR repo if missing
       uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
