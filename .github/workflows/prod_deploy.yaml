@@ -59,8 +59,8 @@ jobs:
 
     - name: change image on value.yaml before helm deploy
       run: |
-        echo "updating values.yaml to change docker image"
-        sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/values.yaml
+        echo "updating prod_values.yaml to change docker image"
+        sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/prod_values.yaml
         
 
     - name: Deploy to eks
