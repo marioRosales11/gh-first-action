@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: notify slack channel
-        uses: slackapi/slack-github-action@v1.19.0
+        uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
             {
@@ -16,18 +16,6 @@ jobs:
               "Status": "this is status",
               "Workflow" URL: "this is URL"
             }
-            # {
-            #    "text": "Deploy failed",
-            #    "blocks": [
-            #      {
-            #        "type": "section",
-            #        "text": {
-            #          "type": "mrkdwn",
-            #          "text": "Depoyment failed: ${{ github.repository }}\n URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            #        }
-            #      }
-            #    ]
-            # }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
