@@ -14,7 +14,7 @@ jobs:
               "branch": "this is branch",
               "actor":  "this is actor",
               "status": "this is status",
-              "uRL": "this is URL"
+              "uRL": "this is URL",
               "text": "TEST deployment failed"
             }
         env:
