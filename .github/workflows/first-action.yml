@@ -5,9 +5,29 @@ jobs:
   first-job: #not reserved, you can choose the name.
     runs-on: ubuntu-latest
     steps:
-      - name: Print greetings
-        run: echo "Hello there!"
-      - name: Print goodbye
-        run: echo "Done - byee!"
-      - name: Print repo name
-        run: echo ${{ github.event.repository.name }}
+      - name: notify slack channel
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+          payload: |
+            {
+              "Repo": "this is repo"
+              "Branch": "this is branch"
+              "Actor":  "this is actor"
+              "Status": "this is status"
+              "Workflow" URL: "this is URL"
+            }
+            # {
+            #    "text": "Deploy failed",
+            #    "blocks": [
+            #      {
+            #        "type": "section",
+            #        "text": {
+            #          "type": "mrkdwn",
+            #          "text": "Depoyment failed: ${{ github.repository }}\n URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            #        }
+            #      }
+            #    ]
+            # }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

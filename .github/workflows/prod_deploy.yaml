@@ -1,69 +1,69 @@
-on:
-  push:
-    branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+# on:
+#   push:
+#     branches: [ main ]
+#   # pull_request:
+#   #   branches: [ main ]
 
-name: AWS microservice deployment
+# name: AWS microservice deployment
 
-jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     name: Deploy
+#     runs-on: ubuntu-latest
 
-    steps:
+#     steps:
 
-    - name: Checkout
-      uses: actions/checkout@v2
+#     - name: Checkout
+#       uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+#         aws-region: us-west-1
 
-    - name: Configure Kubeconfig
-      run: |
-        aws eks update-kubeconfig --name ${{ secrets.PROD_CLUSTER_NAME }} --region us-west-1
-        kubectl config use-context arn:aws:eks:us-west-1:${{ secrets.PROD_AWS_ACCOUNT_ID }}:cluster/${{ secrets.PROD_CLUSTER_NAME }}
+#     - name: Configure Kubeconfig
+#       run: |
+#         aws eks update-kubeconfig --name ${{ secrets.PROD_CLUSTER_NAME }} --region us-west-1
+#         kubectl config use-context arn:aws:eks:us-west-1:${{ secrets.PROD_AWS_ACCOUNT_ID }}:cluster/${{ secrets.PROD_CLUSTER_NAME }}
 
-    - name: Create ECR repo if missing
-      uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
-      with:
-        DOCKER_REPO_NAME: ${{ secrets.REPO_NAME }}
-        TAG_PREFIX: 'prod'
-        NUM_TAGGED_IMAGES_TO_RETAIN: 5
+#     - name: Create ECR repo if missing
+#       uses: byu-oit/github-action-create-ecr-repo-if-missing@v2
+#       with:
+#         DOCKER_REPO_NAME: ${{ secrets.REPO_NAME }}
+#         TAG_PREFIX: 'prod'
+#         NUM_TAGGED_IMAGES_TO_RETAIN: 5
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+#     - name: Login to Amazon ECR
+#       id: login-ecr
+#       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: set git commit sha as tag
-      id: set-tag
-      run: echo "tag=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
+#     - name: set git commit sha as tag
+#       id: set-tag
+#       run: echo "tag=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
 
-    - name: Build, tag, and push the image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-        IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
+#     - name: Build, tag, and push the image to Amazon ECR
+#       id: build-image
+#       env:
+#         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#         ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
+#         IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
 
-      run: |
-        # Build a docker image and pushing it to ECR 
-        echo "Building and pushing image to ECR..."
-        docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:prod$IMAGE_TAG --push --provenance=false .
-        # echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:prod$IMAGE_TAG"
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:prod$IMAGE_TAG" >> $GITHUB_OUTPUT
+#       run: |
+#         # Build a docker image and pushing it to ECR 
+#         echo "Building and pushing image to ECR..."
+#         docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:prod$IMAGE_TAG --push --provenance=false .
+#         # echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:prod$IMAGE_TAG"
+#         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:prod$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: change image on value.yaml before helm deploy
-      run: |
-        echo "updating prod_values.yaml to change docker image"
-        sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/prod_values.yaml
+#     - name: change image on value.yaml before helm deploy
+#       run: |
+#         echo "updating prod_values.yaml to change docker image"
+#         sed -i "s#defaultImage#${{ steps.build-image.outputs.image }}#g" ./helm-chart/prod_values.yaml
         
 
-    - name: Deploy to eks
-      run: |
-        echo "Deploying to EKS"
-        helm upgrade --install ${{ github.event.repository.name }} ./helm-chart -f ./helm-chart/prod_values.yaml
+#     - name: Deploy to eks
+#       run: |
+#         echo "Deploying to EKS"
+#         helm upgrade --install ${{ github.event.repository.name }} ./helm-chart -f ./helm-chart/prod_values.yaml
