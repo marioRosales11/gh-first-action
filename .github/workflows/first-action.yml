@@ -10,11 +10,16 @@ jobs:
         with:
           payload: |
             {
-              "Repo": "this is repo",
-              "Branch": "this is branch",
-              "Actor":  "this is actor",
-              "Status": "this is status",
-              "URL": "this is URL"
+               "text": "Deploy failed",
+               "blocks": [
+                 {
+                   "type": "section",
+                   "text": {
+                     "type": "mrkdwn",
+                     "text": "Depoyment failed: ${{ github.repository }}\n URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                   }
+                 }
+               ]
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
