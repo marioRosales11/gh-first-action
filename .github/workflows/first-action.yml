@@ -10,10 +10,10 @@ jobs:
         with:
           payload: |
             {
-              "Repo": "this is repo"
-              "Branch": "this is branch"
-              "Actor":  "this is actor"
-              "Status": "this is status"
+              "Repo": "this is repo",
+              "Branch": "this is branch",
+              "Actor":  "this is actor",
+              "Status": "this is status",
               "Workflow" URL: "this is URL"
             }
             # {
