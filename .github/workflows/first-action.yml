@@ -14,7 +14,7 @@ jobs:
               "Branch": "this is branch",
               "Actor":  "this is actor",
               "Status": "this is status",
-              "Workflow" URL: "this is URL"
+              "URL": "this is URL"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
